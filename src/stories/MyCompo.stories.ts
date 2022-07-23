@@ -28,8 +28,8 @@ Primary.args = {
     initObj: {
       textAdd: 'this is text1',
       inputSchema: [
-        {type:'text', label: 'label1'},
-        {type:'text', label: 'label2'},
+        {id: 'dsfasdgag-0', type:'text', label: 'label1', value:""},
+        {id: 'dsfasdgag-1', type:'text', label: 'label2', value:""},
       ]
     }
 };
