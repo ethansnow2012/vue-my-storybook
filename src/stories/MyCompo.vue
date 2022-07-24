@@ -8,7 +8,7 @@
     }"
     >
     <div className="c-root-add">
-        {{initObj.textAdd}}
+        {{initObj.textAdd}} <div className="c-root-add-symbol" v-if="expandToggle==false">{{textSymbols.add}}</div>
     </div>
     <div className="c-root-expendable" >
         <div 
@@ -18,8 +18,49 @@
                     ev.stopPropagation()
                 }"
             >
-            <label :htmlFor="inputItem.id">{{inputItem.label}}({{inputItem.value}})</label>
-            <input type="text" :id="inputItem.id" @change="onChange">
+            <div v-if="inputItem.type==='text'" className="c-root-expendable-i_text" >
+                <label :htmlFor="inputItem.id">{{inputItem.label}}</label>
+                <input type="text" :id="inputItem.id" @change="onChange">
+            </div>
+            
+            <div v-if="inputItem.type==='multiselect'" :className="`c-root-expendable-i_multiselect c-root-expendable-i_multiselect-${multiselectMap.get(inputItem).editMode?'A':'B'}`" >
+                <div :style="{display:'flex'}"> 
+                    <span>{{inputItem.label}}</span> 
+                    <div className="c-root-expendable-i_multiselect-add" @click="(ev)=>{onMultiselectAdd(multiselectMap.get(inputItem), ev)}">{{textSymbols.add}}</div> 
+                </div>
+                <div className="c-root-expendable-i-selectbox-wrapper">
+                    <div className="c-root-expendable-i-selectbox-inner">
+                        <div className="c-root-expendable-i-selectbox" :style="{marginTop:multiselectMap.get(inputItem).top}">
+                            <div v-for="tag in inputItem.selected" className="c-root-tags">
+                                <div className="c-root-tags-inner">
+                                    {{tag.text}}
+                                </div>
+                                <div className="c-root-tags-delete" :id="tag.id"  @click="(ev)=>{onTagDelete(inputItem.id, ev)}">
+                                    <div className="c-root-tags-delete-inner">
+                                        {{textSymbols.cross}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div :class="{
+                            'c-root-expendable-i-selectbox': true,
+                            'c-root-expendable-i-selectbox-edit': true,
+                            'c-root-v-collapse': !multiselectMap.get(inputItem).editMode
+                        } " :style="{marginTop:'unset'}">
+                            <div v-for="tag in inputItem.selectable" className="c-root-tags">
+                                <div className="c-root-tags-inner">
+                                    {{tag.text}}
+                                </div>
+                                <div className="c-root-tags-delete" :id="tag.id"  @click="(ev)=>{onTagDelete(inputItem.id, ev)}">
+                                    <div className="c-root-tags-delete-inner">
+                                        {{textSymbols.cross}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
   </div>
@@ -40,9 +81,13 @@ export default {
   },
 
   setup(props, { emit }) {
-    let {initObj} = props
+    const textSymbols = {
+        add: "+",
+        cross: "✖"
+    }
+    let {initObj}:{initObj:initObjType} = props
     if(!isReactive(initObj)){
-        initObj = reactive(initObj)
+        initObj = reactive(initObj) 
     }
     const expandToggle = ref(false)
     const selfRef = ref<HTMLElement|null>(null)
@@ -53,6 +98,17 @@ export default {
                 } 
             }
         )
+    const _multiselectMap = new WeakMap()
+    const multiselect = initObj.inputSchema.filter(x=>x.type==='multiselect')
+    
+    multiselect.forEach((el)=>{
+        _multiselectMap.set(el, {
+            editMode:false,
+            top:'0'
+        })
+    })
+    const multiselectMap = reactive(_multiselectMap)
+
     watch(expandToggle, ()=>{
         const currentWidth = selfRef.value?getComputedStyle(selfRef.value).width:''
         if(selfRef.value != null){
@@ -90,7 +146,30 @@ export default {
             ]
         }
     }
+    const onTagDelete = (inputId, ev)=>{
+        const dueId = ev.target.closest('.c-root-tags').querySelector('.c-root-tags-delete').id // to be deleted
+        let dueSchema =  initObj.inputSchema.filter(x=>x.id==inputId)[0]
+        const restSchema = initObj.inputSchema.filter(x=>x.id!=inputId)
+        if(dueSchema.selected){
+            dueSchema.selected = [...dueSchema.selected.filter(x=>x.id!=dueId)]
+        }
 
+        initObj = { //effect
+            ...initObj, 
+            inputSchema: [
+                ...restSchema,
+                dueSchema
+            ]
+        }
+    }
+    const onMultiselectAdd=(target, ev)=>{
+        const targetStyle = getComputedStyle(ev.target.closest('.c-root-expendable-i_multiselect').querySelector('.c-root-expendable-i-selectbox'))
+        const top = parseFloat(targetStyle.height, 10) + parseFloat(targetStyle.paddingTop, 10) + parseFloat(targetStyle.paddingBottom, 10) + "px"
+        console.log('onMultiselectAdd', ev, target)
+        target.editMode = true
+        target.top = `-${top}`
+        
+    }
     return {
         classes: computed(() => ({
             'c-root': true,
@@ -100,7 +179,11 @@ export default {
         initObj,
         selfRef,
         expandToggle,
+        textSymbols,
+        onTagDelete,
         onChange,
+        onMultiselectAdd,
+        multiselectMap,
         click$At: (ev)=>{
             expandToggle.value = !expandToggle.value
         }
@@ -113,9 +196,12 @@ export default {
     ---color1: #8AD2F0;
     ---color2: #C6E9F8;
     ---color-grey: #696969;
+    ---color-grey-mild: #b7b7b7;
+    ---color-grey-light: #F7F7F8;
     ---sp-1: 20px;
     ---sp-2: 15px;
     ---sp-3: 0.3em;
+    
     display: flex;
     background-color: var(---color1);
     color: white;
@@ -127,6 +213,7 @@ export default {
     transition-property: max-width, min-width;
     overflow: hidden;
 }
+
 .c-root.c-root-expanding{
     cursor: unset;
     max-width: 0;
@@ -154,6 +241,14 @@ export default {
     width: max-content;
     flex-shrink: 0;
     padding: var(---sp-1);
+    display: flex;
+}
+.c-root-add-symbol{
+    padding-left: var(---sp-3);
+    font-weight: bolder;
+    transform: scale(1.3);
+    position: relative;
+    top: -1px;
 }
 .c-root-expendable-i{
     display: flex;
@@ -167,5 +262,67 @@ export default {
 }
 .c-root-expendable-i input{
     outline: none;
+}
+.c-root-expendable-i-selectbox{
+    background: white;
+    border-radius: 10px;
+    margin-top:var(---sp-3);
+    padding: var(---sp-3);
+    display: flex;
+    position: relative;
+}
+.c-root-expendable-i-selectbox:first-child{
+    top: calc(var(---topOffset) * -1);
+}
+.c-root-tags{
+    width: max-content;
+    padding: var(---sp-3);
+    border-radius: 8px;
+    background-color: var(---color-grey-light);
+    border: 1px solid var(---color1);
+    display: flex;
+}
+.c-root-tags + .c-root-tags{
+    margin-left:var(---sp-3);
+}
+.c-root-expendable-i_text input{
+    margin-left:var(---sp-3);
+}
+    
+.c-root-tags-delete{
+    margin-left: 3px;
+    cursor: pointer;
+}
+.c-root-tags-delete:hover{
+    color:var(---color-grey-mild)
+}
+.c-root-tags-delete-inner{
+    position: relative;
+    top: -2px;
+}
+.c-root-v-collapse{
+    height: 0;
+    overflow: hidden;
+    padding: 0;
+}
+.c-root-expendable-i_multiselect > *:first-child{
+    margin-bottom: var(---sp-3);
+}
+.c-root-expendable-i_multiselect-add{
+    background-color: #ffffff73;
+    width: 15px;
+    height: 1.2em;
+    display: flex;
+    padding-left: 5px;
+    border-radius: 4px;
+    padding-top: 1px;
+    margin-left: var(---sp-3);
+    cursor: pointer;
+}
+.c-root-expendable-i-selectbox-inner{
+    overflow: hidden;
+}
+.c-root-expendable-i-selectbox-edit{
+    background: #fff3e4;
 }
 </style>
