@@ -78,6 +78,9 @@
 import type { PropType } from 'vue';
 import { reactive, computed, ref, watch, isReactive  } from 'vue'; 
 import { initObjType } from './MyCompo';
+import { useClickOutside } from '../composables/useClickOutside'
+
+
 
 export default {
   name: 'my-compo',
@@ -202,6 +205,10 @@ export default {
             target.top = `0px`
         }
     }
+
+    useClickOutside(selfRef,()=>{
+        expandToggle.value = false
+    })
     return {
         classes: computed(() => ({
             'c-root': true,
