@@ -26,7 +26,15 @@
             <div v-if="inputItem.type==='multiselect'" :className="`c-root-expendable-i_multiselect c-root-expendable-i_multiselect-${multiselectMap.get(inputItem).editMode?'A':'B'}`" >
                 <div :style="{display:'flex'}"> 
                     <span>{{inputItem.label}}</span> 
-                    <div className="c-root-expendable-i_multiselect-add" @click="(ev)=>{onMultiselectAdd(multiselectMap.get(inputItem), ev)}">{{textSymbols.add}}</div> 
+                    <div 
+                        :class="{
+                            'c-root-expendable-i_multiselect-add': !multiselectMap.get(inputItem).editMode,
+                            'c-root-expendable-i_multiselect-minus': multiselectMap.get(inputItem).editMode
+                        }" 
+                        @click="(ev)=>{onMultiselectAdd(multiselectMap.get(inputItem), ev)}"
+                        >
+                        <span>{{multiselectMap.get(inputItem).editMode?textSymbols.minus:textSymbols.add}}</span>
+                    </div> 
                 </div>
                 <div className="c-root-expendable-i-selectbox-wrapper">
                     <div className="c-root-expendable-i-selectbox-inner">
@@ -47,14 +55,14 @@
                             'c-root-expendable-i-selectbox-edit': true,
                             'c-root-v-collapse': !multiselectMap.get(inputItem).editMode
                         } " :style="{marginTop:'unset'}">
-                            <div v-for="tag in inputItem.selectable" className="c-root-tags">
+                            <div 
+                                v-for="tag in inputItem.selectable.filter(x=> inputItem.selected.filter(y=>y.id===x.id).length==0)" 
+                                className="c-root-tags"
+                                :id="tag.id"
+                                @click="(ev)=>{onTagAdd(multiselectMap.get(inputItem), inputItem.id, ev)}"
+                                >
                                 <div className="c-root-tags-inner">
                                     {{tag.text}}
-                                </div>
-                                <div className="c-root-tags-delete" :id="tag.id"  @click="(ev)=>{onTagDelete(inputItem.id, ev)}">
-                                    <div className="c-root-tags-delete-inner">
-                                        {{textSymbols.cross}}
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -83,6 +91,7 @@ export default {
   setup(props, { emit }) {
     const textSymbols = {
         add: "+",
+        minus: "-",
         cross: "✖"
     }
     let {initObj}:{initObj:initObjType} = props
@@ -162,13 +171,36 @@ export default {
             ]
         }
     }
+    const onTagAdd = (target, inputId, ev) => {
+        const dueId = ev.target.closest('.c-root-tags').id // to be deleted
+        let dueSchema =  initObj.inputSchema.filter(x=>x.id==inputId)[0]
+        const restSchema = initObj.inputSchema.filter(x=>x.id!=inputId)
+        const tagToAdd = dueSchema.selectable?.filter(x=>x.id==dueId)[0]
+
+        if(dueSchema.selected && tagToAdd){
+            dueSchema.selected = [...dueSchema.selected, tagToAdd]
+        }
+
+        initObj = { //effect
+            ...initObj, 
+            inputSchema: [
+                ...restSchema,
+                dueSchema
+            ]
+        }
+        target.editMode = false //
+        target.top = "0px"
+    }
     const onMultiselectAdd=(target, ev)=>{
-        const targetStyle = getComputedStyle(ev.target.closest('.c-root-expendable-i_multiselect').querySelector('.c-root-expendable-i-selectbox'))
-        const top = parseFloat(targetStyle.height, 10) + parseFloat(targetStyle.paddingTop, 10) + parseFloat(targetStyle.paddingBottom, 10) + "px"
-        console.log('onMultiselectAdd', ev, target)
-        target.editMode = true
-        target.top = `-${top}`
-        
+        if(target.editMode == false){
+            const targetStyle = getComputedStyle(ev.target.closest('.c-root-expendable-i_multiselect').querySelector('.c-root-expendable-i-selectbox'))
+            const top = parseFloat(targetStyle.height, 10) + parseFloat(targetStyle.paddingTop, 10) + parseFloat(targetStyle.paddingBottom, 10) + "px"
+            target.editMode = true
+            target.top = `-${top}`
+        }else{
+            target.editMode = false
+            target.top = `0px`
+        }
     }
     return {
         classes: computed(() => ({
@@ -182,6 +214,7 @@ export default {
         textSymbols,
         onTagDelete,
         onChange,
+        onTagAdd,
         onMultiselectAdd,
         multiselectMap,
         click$At: (ev)=>{
@@ -270,6 +303,8 @@ export default {
     padding: var(---sp-3);
     display: flex;
     position: relative;
+    max-width: 270px;
+    flex-wrap: wrap;
 }
 .c-root-expendable-i-selectbox:first-child{
     top: calc(var(---topOffset) * -1);
@@ -281,9 +316,8 @@ export default {
     background-color: var(---color-grey-light);
     border: 1px solid var(---color1);
     display: flex;
-}
-.c-root-tags + .c-root-tags{
-    margin-left:var(---sp-3);
+    margin-right:var(---sp-3);
+    margin-bottom:var(---sp-3);
 }
 .c-root-expendable-i_text input{
     margin-left:var(---sp-3);
@@ -308,7 +342,7 @@ export default {
 .c-root-expendable-i_multiselect > *:first-child{
     margin-bottom: var(---sp-3);
 }
-.c-root-expendable-i_multiselect-add{
+.c-root-expendable-i_multiselect-add, .c-root-expendable-i_multiselect-minus{
     background-color: #ffffff73;
     width: 15px;
     height: 1.2em;
@@ -319,10 +353,16 @@ export default {
     margin-left: var(---sp-3);
     cursor: pointer;
 }
+.c-root-expendable-i_multiselect-minus span{
+    transform: translate(2px);
+}
 .c-root-expendable-i-selectbox-inner{
     overflow: hidden;
 }
 .c-root-expendable-i-selectbox-edit{
     background: #fff3e4;
+}
+.c-root-expendable-i-selectbox-edit .c-root-tags{
+    cursor: pointer;
 }
 </style>
