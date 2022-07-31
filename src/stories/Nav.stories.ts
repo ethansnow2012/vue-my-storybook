@@ -4,7 +4,7 @@ import MyNav from './Nav.vue';
 import { Meta, Story } from '@storybook/vue3'
 
 export default {
-  title: 'Example/aaa',
+  title: 'Example/layout',
   component: [MyNav, NavLayout, NavItem],
   argTypes: {
   },
