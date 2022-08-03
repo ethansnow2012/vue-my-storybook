@@ -14,3 +14,8 @@ export interface initObjType  {
     textAdd: String,
     inputSchema: inputSchemaItem []
 }
+export interface NavLayoutRootData  {
+    navRightTopButtons: {
+        inputInitObject: initObjType[]
+    }
+}

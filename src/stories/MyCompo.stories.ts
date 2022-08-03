@@ -1,5 +1,5 @@
 import MyCompo from '../components/MyCompo.vue';
-import { initObjType } from './MyCompo';
+import { initObjType } from '../dataTypes/MyTypes';
 import { Meta, Story } from '@storybook/vue3'
 
 export default {
