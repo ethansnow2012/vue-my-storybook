@@ -52,8 +52,8 @@ export default {
 <template>
   <div>
     <div>Test Case 1:</div>
-    <div className="l-block-wrapper" v-auto-animate="{ duration: 100 }">
-        <div v-for="block in blockDataRepresent.data" className="l-block" >
+    <div className="l-block-wrapper" v-auto-animate="{ duration: 500 }">
+        <div v-for="block in blockDataRepresent.data" className="l-block" :key="block.id">
             {{block.id}}
         </div>
     </div>
@@ -64,7 +64,7 @@ export default {
   </div>
   <div>
     <div>Test Case 2:</div>
-    <div className="l-block-wrapper" v-auto-animate="{ duration: 100 }">
+    <div className="l-block-wrapper" v-auto-animate="{ duration: 500 }" :key="block.id">
         <div v-for="block in blockDataRepresent2" className="l-block" >
             {{block.id}}
         </div>
