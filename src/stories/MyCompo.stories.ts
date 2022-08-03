@@ -1,4 +1,4 @@
-import MyCompo from './MyCompo.vue';
+import MyCompo from '../components/MyCompo.vue';
 import { initObjType } from './MyCompo';
 import { Meta, Story } from '@storybook/vue3'
 

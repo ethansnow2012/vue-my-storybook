@@ -77,7 +77,7 @@
 <script lang="ts">
 import type { PropType } from 'vue';
 import { reactive, computed, ref, watch, isReactive  } from 'vue'; 
-import { initObjType } from './MyCompo';
+import { initObjType } from '../stories/MyCompo';
 import { useClickOutside } from '../composables/useClickOutside'
 
 
