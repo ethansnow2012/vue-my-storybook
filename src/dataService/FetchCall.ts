@@ -1,6 +1,13 @@
-import {NavLayoutRootData} from '../dataTypes/MyTypes'
+import {NavLayoutRootData, initObjType} from '../dataTypes/MyTypes'
 
 export default {
+    getNewInitObjType: async () : Promise<initObjType> => {
+      return {
+        shortName: "new",
+        textAdd: "this is new",
+        inputSchema: []
+      }
+    },
     navLayout: async () : Promise<NavLayoutRootData> =>  {
         return {
             navRightTopButtons:{
