@@ -1,26 +1,24 @@
 <template>
   <div className="nav-wrapper">
-    <NavItem></NavItem>
-    <NavItem></NavItem>
-    <NavItem></NavItem>
-    
+    <NavItem v-for="inputInitObject in rootData.data?.navRightTopButtons.inputInitObject" :inputInitObject="inputInitObject"></NavItem>
   </div>
   
 </template>
 
 <script lang="ts">
 
-import { reactive, computed } from 'vue';
-import NavItem from '../components/NavItem.vue';
+import { reactive, computed, watchEffect } from 'vue';
+import NavItem from './NavItem.vue';
 //import NavItem from '../c'
 
 export default {
   name: 'my-nav',
   components:{NavItem},
-  props: {
+  props:{
+    rootData: null
   },
-
   setup(props, { emit }) {
+    watchEffect(()=>{ console.log('yo 2222', props.rootData?.data)})
     return {
       
     }

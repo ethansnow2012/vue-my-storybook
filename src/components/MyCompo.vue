@@ -80,6 +80,10 @@ import { reactive, computed, ref, watch, isReactive  } from 'vue';
 import { initObjType } from '../dataTypes/MyTypes';
 import { useClickOutside } from '../composables/useClickOutside'
 
+interface InteractionState {
+    editMode:boolean,
+    top: string
+}
 
 
 export default {
@@ -91,7 +95,7 @@ export default {
     },
   },
 
-  setup(props, { emit }) {
+  setup(props: { initObj: initObjType; }, { emit }: any) {
     const textSymbols = {
         add: "+",
         minus: "-",
@@ -110,7 +114,7 @@ export default {
                 } 
             }
         )
-    const _multiselectMap = new WeakMap()
+    const _multiselectMap = new WeakMap<any, InteractionState>()//
     const multiselect = initObj.inputSchema.filter(x=>x.type==='multiselect')
     
     multiselect.forEach((el)=>{
@@ -143,9 +147,10 @@ export default {
             
         }
     })
-    const onChange = (ev)=>{
-        const currentValue = ev.target.value
-        const dueId = ev.target.id
+    const onChange = (ev:Event)=>{
+        const target = ev.target as HTMLInputElement 
+        const currentValue = target.value
+        const dueId = target.id
         let dueSchema =  initObj.inputSchema.filter(x=>x.id==dueId)[0]
         const restSchema = initObj.inputSchema.filter(x=>x.id!=dueId)
         dueSchema.value = currentValue
@@ -158,8 +163,9 @@ export default {
             ]
         }
     }
-    const onTagDelete = (inputId, ev)=>{
-        const dueId = ev.target.closest('.c-root-tags').querySelector('.c-root-tags-delete').id // to be deleted
+    const onTagDelete = (inputId: string, ev:Event)=>{
+        const target = ev.target as HTMLInputElement 
+        const dueId = target.closest('.c-root-tags')?.querySelector('.c-root-tags-delete')?.id // to be deleted
         let dueSchema =  initObj.inputSchema.filter(x=>x.id==inputId)[0]
         const restSchema = initObj.inputSchema.filter(x=>x.id!=inputId)
         if(dueSchema.selected){
@@ -174,8 +180,8 @@ export default {
             ]
         }
     }
-    const onTagAdd = (target, inputId, ev) => {
-        const dueId = ev.target.closest('.c-root-tags').id // to be deleted
+    const onTagAdd = (target: InteractionState, inputId:string, ev:Event) => {
+        const dueId = (ev.target as HTMLInputElement).closest('.c-root-tags')?.id // to be deleted
         let dueSchema =  initObj.inputSchema.filter(x=>x.id==inputId)[0]
         const restSchema = initObj.inputSchema.filter(x=>x.id!=inputId)
         const tagToAdd = dueSchema.selectable?.filter(x=>x.id==dueId)[0]
@@ -194,9 +200,11 @@ export default {
         target.editMode = false //
         target.top = "0px"
     }
-    const onMultiselectAdd=(target, ev)=>{
+    const onMultiselectAdd=(target: InteractionState, ev:Event)=>{
         if(target.editMode == false){
-            const targetStyle = getComputedStyle(ev.target.closest('.c-root-expendable-i_multiselect').querySelector('.c-root-expendable-i-selectbox'))
+            const htmlTarget = (ev.target as HTMLInputElement).closest('.c-root-expendable-i_multiselect')?.querySelector('.c-root-expendable-i-selectbox')
+            if(!htmlTarget) return
+            const targetStyle = getComputedStyle(htmlTarget)
             const top = parseFloat(targetStyle.height, 10) + parseFloat(targetStyle.paddingTop, 10) + parseFloat(targetStyle.paddingBottom, 10) + "px"
             target.editMode = true
             target.top = `-${top}`
@@ -224,7 +232,7 @@ export default {
         onTagAdd,
         onMultiselectAdd,
         multiselectMap,
-        click$At: (ev)=>{
+        click$At: ()=>{
             expandToggle.value = !expandToggle.value
         }
     }

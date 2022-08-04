@@ -4,11 +4,8 @@ import {ref} from 'vue'
 
 export default {
   name: 'my-nav-layout',
-  setup(props, context) {
-    const aa = ref('6666')
-    console.log('my-nav-layout', context)
+  setup() {
     return {
-      aa
     }
   }
 }
