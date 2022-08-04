@@ -1,11 +1,26 @@
 import {NavLayoutRootData, initObjType} from '../dataTypes/MyTypes'
+import { faker } from '@faker-js/faker';
 
 export default {
     getNewInitObjType: async () : Promise<initObjType> => {
       return {
+        id: faker.datatype.uuid(),
         shortName: "new",
         textAdd: "this is new",
-        inputSchema: []
+        inputSchema: [
+          {
+            id: faker.datatype.uuid(),
+            type:'multiselect', 
+            label: 'label3', 
+            value:"",
+            selected: [
+
+            ],
+            selectable: [
+
+            ]
+          }
+        ]
       }
     },
     navLayout: async () : Promise<NavLayoutRootData> =>  {
@@ -13,6 +28,7 @@ export default {
             navRightTopButtons:{
                 inputInitObject: [
                     {
+                        id:'dfffddhhh-0',
                         textAdd: 'this is text1',
                         inputSchema: [
                           {id: 'dsfasdgag-0', type:'text', label: 'label1', value:""},
@@ -23,41 +39,16 @@ export default {
                             label: 'label3', 
                             value:"",
                             selected: [
-                              { id: 'jklgfkljghj-0', text: 'tag1'},
-                              { id: 'jklgfkljghj-1', text: 'tag2'},
-                              { id: 'jklgfkljghj-2', text: 'tag3'}
+
                             ],
                             selectable: [
-                              { id: 'jklgfkljghj-0', text: 'tag1'},
-                              { id: 'jklgfkljghj-1', text: 'tag2'},
-                              { id: 'jklgfkljghj-2', text: 'tag3'},
-                              { id: 'jklgfkljghj-3', text: 'tag3'},
-                              { id: 'jklgfkljghj-4', text: 'tag4'},
-                              { id: 'jklgfkljghj-5', text: 'tag5'},
+
                             ]
-                          },
-                          {
-                            id: 'dsfasdsdsfsdgag-2', 
-                            type:'multiselect', 
-                            label: 'label3', 
-                            value:"",
-                            selected: [
-                              { id: 'jklgfdffsdkljghj-0', text: 'atag1'},
-                              { id: 'jklgfdffsdkljghj-1', text: 'atag2'},
-                              { id: 'jklgfdffsdkljghj-2', text: 'atag3'},
-                            ],
-                            selectable: [
-                              { id: 'jklgfdffsdkljghj-0', text: 'atag1'},
-                              { id: 'jklgfdffsdkljghj-1', text: 'atag2'},
-                              { id: 'jklgfdffsdkljghj-2', text: 'atag3'},
-                              { id: 'jklgfdffsdkljghj-3', text: 'atag4'},
-                              { id: 'jklgfdffsdkljghj-4', text: 'atag5'},
-                              { id: 'jklgfdffsdkljghj-5', text: 'atag6'}
-                            ]
-                          },
+                          }
                         ]
                     },
                     {
+                        id:'dfffddhhh-1',
                         shortName: 'dddd',
                         textAdd: 'this is text2',
                         inputSchema: [
@@ -80,25 +71,6 @@ export default {
                               { id: 'jklgfkljghj-3', text: 'tag3'},
                               { id: 'jklgfkljghj-4', text: 'tag4'},
                               { id: 'jklgfkljghj-5', text: 'tag5'},
-                            ]
-                          },
-                          {
-                            id: 'dsfasdsdsfsdgag-2', 
-                            type:'multiselect', 
-                            label: 'label3', 
-                            value:"",
-                            selected: [
-                              { id: 'jklgfdffsdkljghj-0', text: 'atag1'},
-                              { id: 'jklgfdffsdkljghj-1', text: 'atag2'},
-                              { id: 'jklgfdffsdkljghj-2', text: 'atag3'},
-                            ],
-                            selectable: [
-                              { id: 'jklgfdffsdkljghj-0', text: 'atag1'},
-                              { id: 'jklgfdffsdkljghj-1', text: 'atag2'},
-                              { id: 'jklgfdffsdkljghj-2', text: 'atag3'},
-                              { id: 'jklgfdffsdkljghj-3', text: 'atag4'},
-                              { id: 'jklgfdffsdkljghj-4', text: 'atag5'},
-                              { id: 'jklgfdffsdkljghj-5', text: 'atag6'}
                             ]
                           },
                         ]

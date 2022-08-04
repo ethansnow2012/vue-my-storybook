@@ -11,6 +11,7 @@ export interface inputSchemaItem  {
     selectable?: inputSchemaItem$SelectedTag []
 }
 export interface initObjType  {
+    id:string,
     shortName?: string
     textAdd: string,
     inputSchema: inputSchemaItem []

@@ -26,6 +26,7 @@ export const Primary = Template.bind({});
 
 Primary.args = {
     initObj: {
+      id:'dfffddhhh-0',
       textAdd: 'this is text1',
       inputSchema: [
         {id: 'dsfasdgag-0', type:'text', label: 'label1', value:""},

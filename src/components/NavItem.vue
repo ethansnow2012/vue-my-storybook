@@ -24,7 +24,6 @@ export default {
     return {
       selRef,
       isHovered,
-      initObj: props.inputInitObject
     }
   }
 }
@@ -33,12 +32,12 @@ export default {
 
 <template>
   <div className="l-item" ref="selRef" v-auto-animate="{ duration: 500 }">   
-    {{initObj.shortName??"Comp."}}
+    {{inputInitObject.shortName??"Comp."}}
     <div 
       className="l-item-hover" 
       v-if="isHovered"
       >
-      <MyCompo  :initObj="initObj" v-if="initObj"></MyCompo>
+      <MyCompo  :initObj="inputInitObject" v-if="inputInitObject"></MyCompo>
     </div>
   </div>
 </template>

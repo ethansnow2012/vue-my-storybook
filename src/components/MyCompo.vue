@@ -76,7 +76,7 @@
 
 <script lang="ts">
 import type { PropType } from 'vue';
-import { reactive, computed, ref, watch, isReactive  } from 'vue'; 
+import { reactive, computed, ref, watch, isReactive, toRefs  } from 'vue'; 
 import { initObjType } from '../dataTypes/MyTypes';
 import { useClickOutside } from '../composables/useClickOutside'
 
@@ -101,10 +101,10 @@ export default {
         minus: "-",
         cross: "✖"
     }
-    let {initObj}:{initObj:initObjType} = props
-    if(!isReactive(initObj)){
-        initObj = reactive(initObj) 
-    }
+    let {initObj}:{initObj:{value:initObjType}} = toRefs(props)
+    // if(!isReactive(initObj)){
+    //     initObj = reactive(initObj) 
+    // }
     const expandToggle = ref(false)
     const selfRef = ref<HTMLElement|null>(null)
     const styles = computed((self) => 
@@ -115,7 +115,7 @@ export default {
             }
         )
     const _multiselectMap = new WeakMap<any, InteractionState>()//
-    const multiselect = initObj.inputSchema.filter(x=>x.type==='multiselect')
+    const multiselect = initObj.value.inputSchema.filter(x=>x.type==='multiselect')
     
     multiselect.forEach((el)=>{
         _multiselectMap.set(el, {
@@ -124,7 +124,7 @@ export default {
         })
     })
     const multiselectMap = reactive(_multiselectMap)
-
+    watch(initObj, ()=>{ console.log('my initObj', initObj)})
     watch(expandToggle, ()=>{
         const currentWidth = selfRef.value?getComputedStyle(selfRef.value).width:''
         if(selfRef.value != null){
@@ -151,11 +151,11 @@ export default {
         const target = ev.target as HTMLInputElement 
         const currentValue = target.value
         const dueId = target.id
-        let dueSchema =  initObj.inputSchema.filter(x=>x.id==dueId)[0]
-        const restSchema = initObj.inputSchema.filter(x=>x.id!=dueId)
+        let dueSchema =  initObj.value.inputSchema.filter(x=>x.id==dueId)[0]
+        const restSchema = initObj.value.inputSchema.filter(x=>x.id!=dueId)
         dueSchema.value = currentValue
         
-        initObj = { //effect
+        initObj.value = { //effect
             ...initObj, 
             inputSchema: [
                 ...restSchema,
@@ -166,13 +166,13 @@ export default {
     const onTagDelete = (inputId: string, ev:Event)=>{
         const target = ev.target as HTMLInputElement 
         const dueId = target.closest('.c-root-tags')?.querySelector('.c-root-tags-delete')?.id // to be deleted
-        let dueSchema =  initObj.inputSchema.filter(x=>x.id==inputId)[0]
-        const restSchema = initObj.inputSchema.filter(x=>x.id!=inputId)
+        let dueSchema =  initObj.value.inputSchema.filter(x=>x.id==inputId)[0]
+        const restSchema = initObj.value.inputSchema.filter(x=>x.id!=inputId)
         if(dueSchema.selected){
             dueSchema.selected = [...dueSchema.selected.filter(x=>x.id!=dueId)]
         }
 
-        initObj = { //effect
+        initObj.value = { //effect
             ...initObj, 
             inputSchema: [
                 ...restSchema,
@@ -182,15 +182,15 @@ export default {
     }
     const onTagAdd = (target: InteractionState, inputId:string, ev:Event) => {
         const dueId = (ev.target as HTMLInputElement).closest('.c-root-tags')?.id // to be deleted
-        let dueSchema =  initObj.inputSchema.filter(x=>x.id==inputId)[0]
-        const restSchema = initObj.inputSchema.filter(x=>x.id!=inputId)
+        let dueSchema =  initObj.value.inputSchema.filter(x=>x.id==inputId)[0]
+        const restSchema = initObj.value.inputSchema.filter(x=>x.id!=inputId)
         const tagToAdd = dueSchema.selectable?.filter(x=>x.id==dueId)[0]
 
         if(dueSchema.selected && tagToAdd){
             dueSchema.selected = [...dueSchema.selected, tagToAdd]
         }
 
-        initObj = { //effect
+        initObj.value = { //effect
             ...initObj, 
             inputSchema: [
                 ...restSchema,
