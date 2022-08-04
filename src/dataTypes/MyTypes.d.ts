@@ -1,17 +1,18 @@
 export interface inputSchemaItem$SelectedTag  {
-    id: String,
-    text: String
+    id: string,
+    text: string
 }
 export interface inputSchemaItem  {
-    id:String,
+    id:string,
     type: 'text'|'multiselect',
-    label: String,
-    value: String,
+    label: string,
+    value: string,
     selected?: inputSchemaItem$SelectedTag []
     selectable?: inputSchemaItem$SelectedTag []
 }
 export interface initObjType  {
-    textAdd: String,
+    shortName?: string
+    textAdd: string,
     inputSchema: inputSchemaItem []
 }
 export interface NavLayoutRootData  {

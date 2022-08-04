@@ -51,6 +51,7 @@ export default {
                         ]
                     },
                     {
+                        shortName: 'dddd',
                         textAdd: 'this is text2',
                         inputSchema: [
                           {id: 'dsfasdgag-0', type:'text', label: 'label1', value:""},

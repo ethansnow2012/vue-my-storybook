@@ -33,7 +33,7 @@ export default {
 
 <template>
   <div className="l-item" ref="selRef" v-auto-animate="{ duration: 500 }">   
-    "item"
+    {{initObj.shortName??"Comp."}}
     <div 
       className="l-item-hover" 
       v-if="isHovered"
