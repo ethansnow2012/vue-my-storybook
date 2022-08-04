@@ -101,7 +101,7 @@ export default {
         minus: "-",
         cross: "✖"
     }
-    let {initObj}:{initObj:{value:initObjType}} = toRefs(props)
+    //let {initObj}:{initObj:{value:initObjType}} = toRefs(props)
     // if(!isReactive(initObj)){
     //     initObj = reactive(initObj) 
     // }
@@ -115,7 +115,7 @@ export default {
             }
         )
     const _multiselectMap = new WeakMap<any, InteractionState>()//
-    const multiselect = initObj.value.inputSchema.filter(x=>x.type==='multiselect')
+    const multiselect = props.initObj.inputSchema.filter(x=>x.type==='multiselect')
     
     multiselect.forEach((el)=>{
         _multiselectMap.set(el, {
@@ -124,7 +124,7 @@ export default {
         })
     })
     const multiselectMap = reactive(_multiselectMap)
-    watch(initObj, ()=>{ console.log('my initObj', initObj)})
+    
     watch(expandToggle, ()=>{
         const currentWidth = selfRef.value?getComputedStyle(selfRef.value).width:''
         if(selfRef.value != null){
@@ -151,12 +151,12 @@ export default {
         const target = ev.target as HTMLInputElement 
         const currentValue = target.value
         const dueId = target.id
-        let dueSchema =  initObj.value.inputSchema.filter(x=>x.id==dueId)[0]
-        const restSchema = initObj.value.inputSchema.filter(x=>x.id!=dueId)
+        let dueSchema =  props.initObj.inputSchema.filter(x=>x.id==dueId)[0]
+        const restSchema = props.initObj.inputSchema.filter(x=>x.id!=dueId)
         dueSchema.value = currentValue
         
-        initObj.value = { //effect
-            ...initObj, 
+        props.initObj = { //effect
+            ...props.initObj, 
             inputSchema: [
                 ...restSchema,
                 dueSchema
@@ -166,37 +166,25 @@ export default {
     const onTagDelete = (inputId: string, ev:Event)=>{
         const target = ev.target as HTMLInputElement 
         const dueId = target.closest('.c-root-tags')?.querySelector('.c-root-tags-delete')?.id // to be deleted
-        let dueSchema =  initObj.value.inputSchema.filter(x=>x.id==inputId)[0]
-        const restSchema = initObj.value.inputSchema.filter(x=>x.id!=inputId)
+        let dueSchema =  props.initObj.inputSchema.filter(x=>x.id==inputId)[0]
+        const restSchema = props.initObj.inputSchema.filter(x=>x.id!=inputId)
         if(dueSchema.selected){
             dueSchema.selected = [...dueSchema.selected.filter(x=>x.id!=dueId)]
         }
 
-        initObj.value = { //effect
-            ...initObj, 
-            inputSchema: [
-                ...restSchema,
-                dueSchema
-            ]
-        }
+        props.initObj.inputSchema =  props.initObj.inputSchema.map(x=>x.id===dueSchema.id?dueSchema: x)
     }
     const onTagAdd = (target: InteractionState, inputId:string, ev:Event) => {
         const dueId = (ev.target as HTMLInputElement).closest('.c-root-tags')?.id // to be deleted
-        let dueSchema =  initObj.value.inputSchema.filter(x=>x.id==inputId)[0]
-        const restSchema = initObj.value.inputSchema.filter(x=>x.id!=inputId)
+        let dueSchema =  props.initObj.inputSchema.filter(x=>x.id==inputId)[0]
+        const restSchema = props.initObj.inputSchema.filter(x=>x.id!=inputId)
         const tagToAdd = dueSchema.selectable?.filter(x=>x.id==dueId)[0]
 
         if(dueSchema.selected && tagToAdd){
             dueSchema.selected = [...dueSchema.selected, tagToAdd]
         }
 
-        initObj.value = { //effect
-            ...initObj, 
-            inputSchema: [
-                ...restSchema,
-                dueSchema
-            ]
-        }
+        props.initObj.inputSchema = props.initObj.inputSchema.map(x=>x.id===dueSchema.id?dueSchema: x)
         target.editMode = false //
         target.top = "0px"
     }
@@ -223,7 +211,7 @@ export default {
             'c-root-expanding': expandToggle.value,
         })),
         styles,
-        initObj,
+        //initObj,
         selfRef,
         expandToggle,
         textSymbols,
