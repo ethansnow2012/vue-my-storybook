@@ -20,7 +20,7 @@
             >
             <div v-if="inputItem.type==='text'" className="c-root-expendable-i_text" >
                 <label :htmlFor="inputItem.id">{{inputItem.label}}</label>
-                <input type="text" :id="inputItem.id" @change="onChange">
+                <input type="text" :id="inputItem.id" @change="onChange" :value="inputItem.value">
             </div>
             
             <div v-if="inputItem.type==='multiselect'" :className="`c-root-expendable-i_multiselect c-root-expendable-i_multiselect-${multiselectMap.get(inputItem).editMode?'A':'B'}`" >
@@ -96,15 +96,15 @@ export default {
   },
 
   setup(props: { initObj: initObjType; }, { emit }: any) {
+    if(!isReactive(props.initObj)){
+        throw 'props.initObj only accept reactive object because it directly mutate the state' 
+    }
     const textSymbols = {
         add: "+",
         minus: "-",
         cross: "✖"
     }
-    //let {initObj}:{initObj:{value:initObjType}} = toRefs(props)
-    // if(!isReactive(initObj)){
-    //     initObj = reactive(initObj) 
-    // }
+
     const expandToggle = ref(false)
     const selfRef = ref<HTMLElement|null>(null)
     const styles = computed((self) => 
@@ -115,15 +115,19 @@ export default {
             }
         )
     const _multiselectMap = new WeakMap<any, InteractionState>()//
-    const multiselect = props.initObj.inputSchema.filter(x=>x.type==='multiselect')
     
-    multiselect.forEach((el)=>{
-        _multiselectMap.set(el, {
-            editMode:false,
-            top:'0'
+    const multiselectMap = computed(()=>{
+        const multiselect = props.initObj.inputSchema.filter(x=>x.type==='multiselect')
+    
+        multiselect.forEach((el)=>{
+            _multiselectMap.set(el, {
+                editMode:false,
+                top:'0'
+            })
         })
+
+        return reactive(_multiselectMap) // dark magic here!
     })
-    const multiselectMap = reactive(_multiselectMap)
     
     watch(expandToggle, ()=>{
         const currentWidth = selfRef.value?getComputedStyle(selfRef.value).width:''
@@ -155,13 +159,15 @@ export default {
         const restSchema = props.initObj.inputSchema.filter(x=>x.id!=dueId)
         dueSchema.value = currentValue
         
-        props.initObj = { //effect
-            ...props.initObj, 
-            inputSchema: [
-                ...restSchema,
-                dueSchema
-            ]
-        }
+        // props.initObj = { //effect
+        //     ...props.initObj, 
+        //     inputSchema: [
+        //         ...restSchema,
+        //         dueSchema
+        //     ]
+        // }
+        console.log('on change')
+        props.initObj.inputSchema =  props.initObj.inputSchema.map(x=>x.id===dueSchema.id?dueSchema: x)
     }
     const onTagDelete = (inputId: string, ev:Event)=>{
         const target = ev.target as HTMLInputElement 
@@ -221,7 +227,7 @@ export default {
         onMultiselectAdd,
         multiselectMap,
         click$At: ()=>{
-            expandToggle.value = !expandToggle.value
+            expandToggle.value = true//!expandToggle.value
         }
     }
   },

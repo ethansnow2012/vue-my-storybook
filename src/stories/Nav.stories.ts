@@ -17,6 +17,7 @@ export default {
 const Template: Story  = (args ) => ({
   components: { MyNav, NavLayout, NavItem },
   setup() {
+    // This reactive object do self organize. this can be extracted to be a composable.
     const rootData = reactive<{data:NavLayoutRootData|null, loopingState:'waiting'|'fine'}>({data:null, loopingState: 'fine'})
     fetchCall.navLayout().then((data)=>{
       rootData.data = data
@@ -34,11 +35,18 @@ const Template: Story  = (args ) => ({
       })
       newNavLayoutRootData?.navRightTopButtons?.inputInitObject.forEach((el)=>{
         el.inputSchema.forEach((el2)=>{
+          if(el2.hook && el2.type=='text' && el2.hook.action ==='meta'){
+            if(el[el2.hook.payload]!==el2.value){
+              isIdentical = false
+              el[el2.hook.payload]=el2.value
+            }
+          }
           if(el2.type=='multiselect'){
             if(JSON.stringify(el2.selectable)!=JSON.stringify(selectable)){
               isIdentical = false
+              el2.selectable = selectable
             }
-            el2.selectable = selectable
+            
           }
         })
       })

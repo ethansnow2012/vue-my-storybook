@@ -8,7 +8,8 @@ export interface inputSchemaItem  {
     label: string,
     value: string,
     selected?: inputSchemaItem$SelectedTag []
-    selectable?: inputSchemaItem$SelectedTag []
+    selectable?: inputSchemaItem$SelectedTag [],
+    hook?: { payload: string, action:string}
 }
 export interface initObjType  {
     id:string,

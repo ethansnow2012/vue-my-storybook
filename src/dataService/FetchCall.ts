@@ -11,7 +11,7 @@ export default {
           {
             id: faker.datatype.uuid(),
             type:'multiselect', 
-            label: 'label3', 
+            label: 'have side effects on', 
             value:"",
             selected: [
 
@@ -29,48 +29,40 @@ export default {
                 inputInitObject: [
                     {
                         id:'dfffddhhh-0',
-                        textAdd: 'this is text1',
+                        shortName: 'one',
+                        textAdd: 'component 1',
                         inputSchema: [
-                          {id: 'dsfasdgag-0', type:'text', label: 'label1', value:""},
-                          {id: 'dsfasdgag-1', type:'text', label: 'label2', value:""},
+                          {id: 'dsfasdgag-1', type:'text', label: 'Name', value:"component 1", hook:{ payload: 'textAdd', action:'meta'}},
                           {
                             id: 'dsfasdgag-2', 
                             type:'multiselect', 
-                            label: 'label3', 
+                            label: 'have side effects on', 
                             value:"",
                             selected: [
 
                             ],
                             selectable: [
-
+                              { id: 'dfffddhhh-1', text: 'this is text2'},
                             ]
                           }
                         ]
                     },
                     {
                         id:'dfffddhhh-1',
-                        shortName: 'dddd',
-                        textAdd: 'this is text2',
+                        shortName: 'two',
+                        textAdd: 'component 2',
                         inputSchema: [
-                          {id: 'dsfasdgag-0', type:'text', label: 'label1', value:""},
-                          {id: 'dsfasdgag-1', type:'text', label: 'label2', value:""},
+                          {id: 'dsfasdgag-1', type:'text', label: 'label2', value:"component 2", hook:{ payload: 'textAdd', action:'meta'}},
                           {
                             id: 'dsfasdgag-2', 
                             type:'multiselect', 
-                            label: 'label3', 
+                            label: 'have side effects on', 
                             value:"",
                             selected: [
-                              { id: 'jklgfkljghj-0', text: 'tag1'},
-                              { id: 'jklgfkljghj-1', text: 'tag2'},
-                              { id: 'jklgfkljghj-2', text: 'tag3'}
+
                             ],
                             selectable: [
-                              { id: 'jklgfkljghj-0', text: 'tag1'},
-                              { id: 'jklgfkljghj-1', text: 'tag2'},
-                              { id: 'jklgfkljghj-2', text: 'tag3'},
-                              { id: 'jklgfkljghj-3', text: 'tag3'},
-                              { id: 'jklgfkljghj-4', text: 'tag4'},
-                              { id: 'jklgfkljghj-5', text: 'tag5'},
+                              { id: 'dfffddhhh-0', text: 'this is text1'},
                             ]
                           },
                         ]
