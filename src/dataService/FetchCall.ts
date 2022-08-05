@@ -11,7 +11,7 @@ export default {
           {
             id: faker.datatype.uuid(),
             type:'multiselect', 
-            label: 'have side effects on', 
+            label: 'Have side effects on:', 
             value:"",
             selected: [
 
@@ -30,13 +30,13 @@ export default {
                     {
                         id:'dfffddhhh-0',
                         shortName: 'one',
-                        textAdd: 'component 1',
+                        textAdd: 'state 1',
                         inputSchema: [
-                          {id: 'dsfasdgag-1', type:'text', label: 'Name', value:"component 1", hook:{ payload: 'textAdd', action:'meta'}},
+                          {id: 'dsfasdgag-1', type:'text', label: 'Name', value:"state 1", hook:{ payload: 'textAdd', action:'meta'}},
                           {
                             id: 'dsfasdgag-2', 
                             type:'multiselect', 
-                            label: 'have side effects on', 
+                            label: 'Have side effects on:', 
                             value:"",
                             selected: [
 
@@ -50,13 +50,13 @@ export default {
                     {
                         id:'dfffddhhh-1',
                         shortName: 'two',
-                        textAdd: 'component 2',
+                        textAdd: 'state 2',
                         inputSchema: [
-                          {id: 'dsfasdgag-1', type:'text', label: 'label2', value:"component 2", hook:{ payload: 'textAdd', action:'meta'}},
+                          {id: 'dsfasdgag-1', type:'text', label: 'label2', value:"state 2", hook:{ payload: 'textAdd', action:'meta'}},
                           {
                             id: 'dsfasdgag-2', 
                             type:'multiselect', 
-                            label: 'have side effects on', 
+                            label: 'Have side effects on:', 
                             value:"",
                             selected: [
 
