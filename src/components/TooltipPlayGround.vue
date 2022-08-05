@@ -16,7 +16,6 @@ export default {
     tooltip: VTooltip,
     //tooltipCloser: VClosePopper
   },
-  emits: ['someevent'],
   setup(props, context) {
 
     return {
@@ -29,11 +28,16 @@ export default {
 
 <template>
 
-  <div v-tooltip="'yooooooo.'" >   
+  <div v-tooltip="'yooooooo.'" className="l-text">   
+    adsfasdf
+  </div>
+  <div v-tooltip="{ content: `yooooooooo.`, placement: 'right'}" className="l-text">   
     adsfasdf
   </div>
 </template>
 
 <style scoped>
-
+    .l-text{
+        width: max-content;
+    }
 </style>
